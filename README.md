@@ -2,6 +2,8 @@
 
 A collection of bash scripts to manage godaddy records remotely.
 
+Requires that curl be installed.
+
 The ddns.conf file is of the form:
 
 otegdapikey="Your OTE GoDaddy API key"
