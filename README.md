@@ -1,11 +1,15 @@
-A collection of bash scripts to manage godaddy remotely
+# Godaddy scripts
 
-The ddns.conf file is on the form:
+A collection of bash scripts to manage godaddy records remotely.
+
+The ddns.conf file is of the form:
 
 otegdapikey="Your OTE GoDaddy API key"
 gdapikey="Your GoDaddy API key"
 mydomain="Your domain name"
 
+The following files are supplied:
+
 ddns-a.sh - Updates godaddy A record if different than your external IP
-ddns-cname.sh - Updates godaddy cname if different than external IP
+ddns-cname.sh - Adds a godaddy CNAME record for the local host
 ddns-acme.sh {ACME challenge} - Adds an ACME challenge record
