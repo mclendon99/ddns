@@ -14,4 +14,4 @@ The following files are supplied:
 
 ddns-a.sh - Updates godaddy A record if different than your external IP
 ddns-cname.sh - Adds a godaddy CNAME record for the local host
-ddns-acme.sh {ACME challenge} - Adds an ACME challenge record
+ddns-acme.sh {ACME challenge} - Adds or replaces an ACME challenge record

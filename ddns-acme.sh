@@ -24,5 +24,5 @@ gdip=`echo $dnsdata | cut -d ',' -f 1 | tr -d '"' | cut -d ":" -f 2`
 echo "`date '+%Y-%m-%d %H:%M:%S'` - Current External IP is $myip, GoDaddy DNS IP is $gdip"
 
 echo "Adding ACME challenge on GoDaddy"
-curl -s -X PUT "https://api.godaddy.com/v1/domains/${mydomain}/records/TXT/_acme_challenge" -H "Authorization: sso-key ${gdapikey}" -H "Content-Type: application/json" -d "[{\"data\": \"$1\"}]"
+resp=`curl -s -X PUT "https://api.godaddy.com/v1/domains/${mydomain}/records/TXT/_acme-challenge" -H "Authorization: sso-key ${gdapikey}" -H "Content-Type: application/json" -d "[ {\"data\":\"$1\",\"name\":\"_acme-challenge\",\"port\":65535,\"ttl\":3600,\"type\":\"TXT\"} ]"`
 logger -p $logdest "Added _acme_challenge $1 to ${mydomain}"
