@@ -1,27 +1,29 @@
 #!/bin/bash
 #set -x
-myhostname=`hostname -s`
+# Add a CNAME record for a host if one is not already present.
 
-. ddns.conf
+# Support env variables as well as config file
+[ -f ./ddns.conf ] && . ./ddns.conf
 
-if [[ -z $otegdapikey || -z $gdapikey || -z $mydomain ]]
+if [[ -z $GDAPIKEY || -z $MYDOMAIN || -z $GODADDYHOST ]]
 then
-    echo "Must supply otedgapikey gdapikey and mydomain in ddns.conf file"
+    echo "Must supply GDAPIKEY, MYDOMAIN and GODADDYHOST in environment variables or ddns.conf file. Exiting."
     exit -2
 fi
-logdest="local7.info"
 
-echo Hostname is $myhostname
+# Just the host part
+myhostname=`hostname -s`
+echo Host name is $myhostname
 
-dnsdata=`curl -s -X GET -H "Authorization: sso-key ${gdapikey}" "https://api.godaddy.com/v1/domains/${mydomain}/records/CNAME/${myhostname}"`
-#dnsdata=`curl -s -X GET -H "Authorization: sso-key ${gdapikey}" "https://api.godaddy.com/v1/domains/${mydomain}/records"`
-echo Response to CNAME query for ${myhostname}.${mydomain} is $dnsdata
-if [ "[]" = "$dnsdata" ] ;
-then
-  echo "Adding a CNAME ${myhostname} record to domain ${mydomain}"
-  resp=`curl -s -X PATCH  "https://api.godaddy.com/v1/domains/${mydomain}/records" -H "Authorization: sso-key ${gdapikey}" -H "Content-Type: application/json" -d "[ {\"data\":\"@\",\"name\":\"${myhostname}\",\"port\":65535,\"ttl\":3600,\"type\":\"CNAME\"} ]"`
+dnsdata=`curl -s -X GET -H "Authorization: sso-key ${GDAPIKEY}" "${GODADDYHOST}/v1/domains/${MYDOMAIN}/records/CNAME/${myhostname}"`
+echo Response to CNAME query for ${myhostname}.${MYDOMAIN} is $dnsdata
+if [ "[]" = "$dnsdata" ] ; then
+  echo "Adding a CNAME ${myhostname} record to domain ${MYDOMAIN}"
+  resp=`curl -s -X PATCH  "${GODADDYHOST}/v1/domains/${MYDOMAIN}/records" -H "Authorization: sso-key ${GDAPIKEY}" -H "Content-Type: application/json" -d "[ {\"data\":\"@\",\"name\":\"${myhostname}\",\"port\":65535,\"ttl\":3600,\"type\":\"CNAME\"} ]"`
   echo Response to add is $resp
+  echo "Added CNAME record for ${hostname}.${MYDOMAIN}"
+else
+  echo CNAME record for ${myhostnmae} already exists. No action taken.
 fi
 
 
-logger -p $logdest "Added CNAME record for ${hostname}.${mydomain}"
