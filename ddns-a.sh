@@ -12,17 +12,22 @@ then
     echo "Must supply GDAPIKEY, MYDOMAIN and GODADDYHOST variables in environment variables or ddns.conf file. Exiting."
     exit -2
 fi
-
-myhostname=`hostname -s`
+# Check the domain exists
+resp=`curl -s -X GET "${GODADDYHOST}/v1/domains/${MYDOMAIN}"  -H "Authorization: sso-key ${GDAPIKEY}"`
+if grep -q "NOT_FOUND" <<< $resp ; then
+    echo "Domain ${MYDOMAIN} does not appear to exist on GoDaddy. Exiting."
+    exit -3
+fi
 # External IP
 myip=`curl -s "https://api.ipify.org"`
 dnsdata=`curl -s -X GET -H "Authorization: sso-key ${GDAPIKEY}" "${GODADDYHOST}/v1/domains/${MYDOMAIN}/records/A"`
 gdip=`echo $dnsdata | cut -d ',' -f 1 | tr -d '"' | cut -d ":" -f 2`
-echo "`date '+%Y-%m-%d %H:%M:%S'` - Current External IP is $myip. GoDaddy DNS IP is $gdip."
+echo "`date '+%Y-%m-%d %H:%M:%S'` - Current external IP is $myip. GoDaddy DNS IP is $gdip."
 
 if [[ "$gdip" != "$myip" && "$myip" != "" ]]; then
-  echo "IP has changed!! Updating on GoDaddy"
-  curl -s -X PUT "${GODADDYHOST}/v1/domains/${MYDOMAIN}/records/A/@" -H "Authorization: sso-key ${GDAPIKEY}" -H "Content-Type: application/json" -d "[ {\"data\":\"${myip}\",\"name\":\"@\",\"port\":65535,\"ttl\":3600,\"type\":\"A\"} ]"
+  echo "IP has changed! Updating on GoDaddy..."
+  resp=`curl -s -X PUT "${GODADDYHOST}/v1/domains/${MYDOMAIN}/records/A/@" -H "Authorization: sso-key ${GDAPIKEY}" -H "Content-Type: application/json" -d "[ {\"data\":\"${myip}\",\"name\":\"@\",\"port\":65535,\"ttl\":3600,\"type\":\"A\"} ]"`
+  echo "Response is: ${resp}"
   echo "Changed A record IP on ${MYDOMAIN} from ${gdip} to ${myip}."
 else
   echo "IP has not changed! No action taken."
