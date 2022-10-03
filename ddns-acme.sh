@@ -16,8 +16,6 @@ then
     exit -2
 fi
 
-myhostname=`hostname -s`
-
 echo "Adding ACME challenge on GoDaddy"
 resp=`curl -s -X PUT "${GODADDYHOST}/v1/domains/${MYDOMAIN}/records/TXT/_acme-challenge" -H "Authorization: sso-key ${GDAPIKEY}" -H "Content-Type: application/json" -d "[ {\"data\":\"$1\",\"name\":\"_acme-challenge\",\"port\":65535,\"ttl\":3600,\"type\":\"TXT\"} ]"`
 echo "Added _acme_challenge $1 to ${MYDOMAIN}"
