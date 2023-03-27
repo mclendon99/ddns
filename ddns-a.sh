@@ -5,11 +5,22 @@
 #set -x
 
 # Support env variables as well as config file
+# Config file, if it exists, overrides the env variables
 [ -f ./ddns.conf ] && . ./ddns.conf
 
-if [[ -z $GDAPIKEY || -z $MYDOMAIN || -z $GODADDYHOST ]]
+if [[ -z $GDAPIKEY ]]
 then
-    echo "Must supply GDAPIKEY, MYDOMAIN and GODADDYHOST variables in environment variables or ddns.conf file. Exiting."
+    echo "Must supply GDAPIKEY in environment variable or ddns.conf file. Exiting."
+    exit -2
+fi
+if [[ -z $MYDOMAIN ]]
+then
+    echo "Must supply MYDOMAIN in environment variable or ddns.conf file. Exiting."
+    exit -2
+fi
+if [[ -z $GODADDYHOST ]]
+then
+    echo "Must supply GODADDYHOST in environment variable or ddns.conf file. Exiting."
     exit -2
 fi
 # Check the domain exists
@@ -21,6 +32,7 @@ fi
 # External IP
 myip=`curl -s "https://api.ipify.org"`
 dnsdata=`curl -s -X GET -H "Authorization: sso-key ${GDAPIKEY}" "${GODADDYHOST}/v1/domains/${MYDOMAIN}/records/A"`
+echo "Response is - "$dnsdata
 gdip=`echo $dnsdata | cut -d ',' -f 1 | tr -d '"' | cut -d ":" -f 2`
 echo "`date '+%Y-%m-%d %H:%M:%S'` - Current external IP is $myip. GoDaddy DNS IP is $gdip."
 
