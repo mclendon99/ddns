@@ -3,11 +3,28 @@
 # Add a CNAME record for a host if one is not already present.
 
 # Support env variables as well as config file
-[ -f ./ddns.conf ] && . ./ddns.conf
+if [[ -f ./ddns.conf ]]
+then
+    echo "Found a ddns.conf file. Sourcing..."
+    . ./ddns.conf 
+fi
+# Check that something is there
+if [ -z "$GDAPIKEY" ]
+then
+    echo "Must supply GDAPIKEY variable in environment variables or ddns.conf file."
+fi
+if [ -z "$MYDOMAIN"  ]
+then
+    echo "Must supply MYDOMAIN variable in environment variables or ddns.conf file. "
+fi
+if [ -z "$GODADDYHOST" ]
+then
+    echo "Must supply GODADDYHOST variable in environment variables or ddns.conf file."
+fi
 
 if [[ -z $GDAPIKEY || -z $MYDOMAIN || -z $GODADDYHOST ]]
-then
-    echo "Must supply GDAPIKEY, MYDOMAIN and GODADDYHOST in environment variables or ddns.conf file. Exiting."
+then 
+    echo "Exiting due to missing variables!"
     exit -2
 fi
 # Check the domain exists
