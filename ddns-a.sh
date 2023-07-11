@@ -7,23 +7,29 @@
 # Support env variables as well as config file
 if [[ -f ./ddns.conf ]]
 then
+    echo "Found a ddns.conf file. Sourcing..."
     . ./ddns.conf 
-    echo "Using GDAPIKEY, MYDOMAIN, GODADDYHOST from ddns.conf."
 fi
 # Check that something is there
-if [[ -z $GDAPIKEY ]]
+if [ -z "$GDAPIKEY" ]
 then
-    echo "Must supply GDAPIKEY variable in environment variables or ddns.conf file. Exiting."
-    exit -2
-elif [[ -z $MYDOMAIN  ]]
+    echo "Must supply GDAPIKEY variable in environment variables or ddns.conf file."
+fi
+if [ -z "$MYDOMAIN"  ]
 then
-    echo "Must supply MYDOMAIN variable in environment variables or ddns.conf file. Exiting."
-    exit -2
-elif [[ -z $GODADDYHOST ]]
+    echo "Must supply MYDOMAIN variable in environment variables or ddns.conf file. "
+fi
+if [ -z "$GODADDYHOST" ]
 then
-    echo "Must supply GODADDYHOST variable in environment variables or ddns.conf file. Exiting."
+    echo "Must supply GODADDYHOST variable in environment variables or ddns.conf file."
+fi
+
+if [[ -z $GDAPIKEY || -z $MYDOMAIN || -z $GODADDYHOST ]]
+then 
+    echo "Exiting due to missing variables!"
     exit -2
 fi
+
 # Check the domain exists
 echo "Checking domain: ${MYDOMAIN}"
 resp=`curl -s -X GET "${GODADDYHOST}/v1/domains/${MYDOMAIN}"  -H "Authorization: sso-key ${GDAPIKEY}"`
