@@ -21,7 +21,7 @@ fi
 if [[ -z $GODADDYHOST ]]
 then
     echo "Must supply GODADDYHOST in environment variable or ddns.conf file. Exiting."
-=======
+fi
 if [[ -f ./ddns.conf ]]
 then
     echo "Found a ddns.conf file. Sourcing..."
