@@ -21,15 +21,38 @@ fi
 if [[ -z $GODADDYHOST ]]
 then
     echo "Must supply GODADDYHOST in environment variable or ddns.conf file. Exiting."
-    exit -2
+=======
+if [[ -f ./ddns.conf ]]
+then
+    echo "Found a ddns.conf file. Sourcing..."
+    . ./ddns.conf 
 fi
+# Check that something is there
+if [ -z "$GDAPIKEY" ]
+then
+    echo "Must supply GDAPIKEY variable in environment variables or ddns.conf file."
+fi
+if [ -z "$MYDOMAIN"  ]
+then
+    echo "Must supply MYDOMAIN variable in environment variables or ddns.conf file. "
+fi
+if [ -z "$GODADDYHOST" ]
+then
+    echo "Must supply GODADDYHOST variable in environment variables or ddns.conf file."
+fi
+
 # Check the domain exists
+echo "Checking domain: ${MYDOMAIN}"
 resp=`curl -s -X GET "${GODADDYHOST}/v1/domains/${MYDOMAIN}"  -H "Authorization: sso-key ${GDAPIKEY}"`
 if grep -q "NOT_FOUND" <<< $resp ; then
     echo "Domain ${MYDOMAIN} does not appear to exist on GoDaddy. Exiting."
     exit -3
+elif grep -q "UNABLE_TO_AUTHENTICATE" <<< $resp ; then
+    echo "GDAPIKEY failed authentication. Exiting."
+    exit -3
 fi
 # External IP
+echo "Retrieving A record"
 myip=`curl -s "https://api.ipify.org"`
 dnsdata=`curl -s -X GET -H "Authorization: sso-key ${GDAPIKEY}" "${GODADDYHOST}/v1/domains/${MYDOMAIN}/records/A"`
 echo "Response is - "$dnsdata
@@ -39,7 +62,7 @@ echo "`date '+%Y-%m-%d %H:%M:%S'` - Current external IP is $myip. GoDaddy DNS IP
 if [[ "$gdip" != "$myip" && "$myip" != "" ]]; then
   echo "IP has changed! Updating on GoDaddy..."
   resp=`curl -s -X PUT "${GODADDYHOST}/v1/domains/${MYDOMAIN}/records/A/@" -H "Authorization: sso-key ${GDAPIKEY}" -H "Content-Type: application/json" -d "[ {\"data\":\"${myip}\",\"name\":\"@\",\"port\":65535,\"ttl\":3600,\"type\":\"A\"} ]"`
-  echo "Response is: ${resp}"
+  echo "Response to PUT is: ${resp}"
   echo "Changed A record IP on ${MYDOMAIN} from ${gdip} to ${myip}."
 else
   echo "IP has not changed! No action taken."
