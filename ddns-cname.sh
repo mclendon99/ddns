@@ -51,7 +51,7 @@ if [ "[]" = "$dnsdata" ] ; then
   echo Response to PATCH is: $resp
   echo "Added CNAME record for ${hostname}.${MYDOMAIN}"
 else
-  echo CNAME record for ${myhostnmae} already exists. No action taken.
+  echo CNAME record for ${myhostname} already exists. No action taken.
 fi
 
 
