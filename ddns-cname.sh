@@ -34,6 +34,11 @@ if grep -q "NOT_FOUND" <<< $resp ; then
     exit -3
 fi
 
+if grep -q "UNABLE_TO_AUTHENICATE" <<< $resp ; then
+    echo "GDAPIKEY is not valid. Exiting."
+    exit -3
+fi
+
 # Just the host part
 myhostname=`hostname -s`
 echo Host name is $myhostname

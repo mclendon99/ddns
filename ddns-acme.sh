@@ -18,4 +18,9 @@ fi
 
 echo "Adding ACME challenge on GoDaddy"
 resp=`curl -s -X PUT "${GODADDYHOST}/v1/domains/${MYDOMAIN}/records/TXT/_acme-challenge" -H "Authorization: sso-key ${GDAPIKEY}" -H "Content-Type: application/json" -d "[ {\"data\":\"$1\",\"name\":\"_acme-challenge\",\"port\":65535,\"ttl\":3600,\"type\":\"TXT\"} ]"`
+if grep -q "UNABLE_TO_AUTHENTICATE" <<< $resp ; then
+    echo "GDAPIKEY failed authentication. Exiting."
+    exit -3
+fi
+# External IP
 echo "Added _acme_challenge $1 to ${MYDOMAIN}"
