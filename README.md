@@ -1,7 +1,7 @@
 # GoDaddy scripts
 
 A collection of bash scripts to manage godaddy records remotely.
-Bash is required as the scripts use the [[ operator.
+Bash is required as the scripts use the `[[` operator.
 
 The scripts require that curl be installed, e.g.
 
