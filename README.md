@@ -12,11 +12,11 @@ The ddns.conf file is of the form:
     # The GDAPIKEY consists of the key and the secret seperated by a colon, e.g. "key:secret"
     GDAPIKEY="Replace with your GoDaddy API key or GoDaddy OTE key if using the OTE."
     # The https:// prefix is required as part of the string.
-    GODADDYHOST=https://api.godaddy.com
+    GDHOST=https://api.godaddy.com
     # Use this for testing on the OTE. Be sure to set the OTE key in GDAPIKEY if using the OTE.
     # GODADDYHOST=https://api.ote-godaddy.com
     # Replace with your domain as registered on GoDaddy (not the hostname part).
-    MYDOMAIN=""
+    GDDOMAIN=""
 
 The configuration items can also be read from the environment. The config file items override the environment entries.
 
