@@ -16,11 +16,11 @@ then
 fi
 if [[ -z $GDDOMAIN ]]
 then
-    echo "Must supply MYDOMAIN in environment variable or ddns.conf file."
+    echo "Must supply GDDOMAIN in environment variable or ddns.conf file."
 fi
 if [[ -z $GDHOST ]]
 then
-    echo "Must supply GODADDYHOST in environment variable or ddns.conf file."
+    echo "Must supply GDHOST in environment variable or ddns.conf file."
 fi
 # Terminate on missing args
 if [[ -z $GDAPIKEY || -z $GDDOMAIN || -z $GDHOST ]]

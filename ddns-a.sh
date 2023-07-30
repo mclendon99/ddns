@@ -14,11 +14,11 @@ then
 fi
 if [[ -z $GDDOMAIN ]]
 then
-    echo "Must supply MYDOMAIN in environment variable or ddns.conf file."
+    echo "Must supply GDDOMAIN in environment variable or ddns.conf file."
 fi
 if [[ -z $GDHOST ]]
 then
-    echo "Must supply GODADDYHOST in environment variable or ddns.conf file."
+    echo "Must supply GDHOST in environment variable or ddns.conf file."
 fi
 # Terminate if anything missing
 if [[ -z $GDAPIKEY || -z $GDDOMAIN || -z $GDHOST ]]
@@ -28,10 +28,10 @@ then
 fi
 
 # Check the domain exists
-echo "Checking domain: ${GODADDYDOMAIN}"
-resp=`curl -s -X GET "${GODADDYHOST}/v1/domains/${GODADDYDOMAIN}"  -H "Authorization: sso-key ${GDAPIKEY}"`
+echo "Checking domain: ${GDDOMAIN}"
+resp=`curl -s -X GET "${GDHOST}/v1/domains/${GDDOMAIN}"  -H "Authorization: sso-key ${GDAPIKEY}"`
 if grep -q "NOT_FOUND" <<< $resp ; then
-    echo "Domain ${GODADDYDOMAIN} does not appear to exist on GoDaddy. Exiting."
+    echo "Domain ${GDDOMAIN} does not appear to exist on GoDaddy. Exiting."
     exit -3
 elif grep -q "UNABLE_TO_AUTHENTICATE" <<< $resp ; then
     echo "GDAPIKEY failed authentication. Exiting."
@@ -40,16 +40,16 @@ fi
 # External IP
 echo "Retrieving A record"
 myip=`curl -s "https://api.ipify.org"`
-dnsdata=`curl -s -X GET -H "Authorization: sso-key ${GDAPIKEY}" "${GODADDYHOST}/v1/domains/${GODADDYDOMAIN}/records/A"`
+dnsdata=`curl -s -X GET -H "Authorization: sso-key ${GDAPIKEY}" "${GDHOST}/v1/domains/${GDDOMAIN}/records/A"`
 echo "Response is - "$dnsdata
 gdip=`echo $dnsdata | cut -d ',' -f 1 | tr -d '"' | cut -d ":" -f 2`
 echo "`date '+%Y-%m-%d %H:%M:%S'` - Current external IP is $myip. GoDaddy DNS IP is $gdip."
 
 if [[ "$gdip" != "$myip" && "$myip" != "" ]]; then
   echo "IP has changed! Updating on GoDaddy..."
-  resp=`curl -s -X PUT "${GODADDYHOST}/v1/domains/${GODADDYDOMAIN}/records/A/@" -H "Authorization: sso-key ${GDAPIKEY}" -H "Content-Type: application/json" -d "[ {\"data\":\"${myip}\",\"name\":\"@\",\"port\":65535,\"ttl\":3600,\"type\":\"A\"} ]"`
+  resp=`curl -s -X PUT "${GDHOST}/v1/domains/${GDDOMAIN}/records/A/@" -H "Authorization: sso-key ${GDAPIKEY}" -H "Content-Type: application/json" -d "[ {\"data\":\"${myip}\",\"name\":\"@\",\"port\":65535,\"ttl\":3600,\"type\":\"A\"} ]"`
   echo "Response to PUT is: ${resp}"
-  echo "Changed A record IP on ${GODADDYDOMAIN} from ${gdip} to ${myip}."
+  echo "Changed A record IP on ${GDDOMAIN} from ${gdip} to ${myip}."
 else
   echo "IP has not changed! No action taken."
 fi

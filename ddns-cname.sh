@@ -11,15 +11,15 @@ fi
 # Check that something is there
 if [ -z "$GDAPIKEY" ]
 then
-    echo "Must supply GDAPIKEY variable in environment variables or ddns.conf file."
+    echo "Must supply GDAPIKEY value in environment variables or ddns.conf file."
 fi
-if [ -z "$GDiDOMAIN"  ]
+if [ -z "$GDDOMAIN"  ]
 then
-    echo "Must supply MYDOMAIN variable in environment variables or ddns.conf file. "
+    echo "Must supply GDDOMAIN value in environment variables or ddns.conf file. "
 fi
 if [ -z "$GDHOST" ]
 then
-    echo "Must supply GODADDYHOST variable in environment variables or ddns.conf file."
+    echo "Must supply GDHOST value in environment variables or ddns.conf file."
 fi
 
 if [[ -z $GDAPIKEY || -z $GDDOMAIN || -z $GDHOST ]]
@@ -47,7 +47,7 @@ if [ "[]" = "$dnsdata" ] ; then
   echo "Adding a CNAME ${myhostname} record to domain ${GDDOMAIN}"
   resp=`curl -s -X PATCH  "${GDHOST}/v1/domains/${GDDOMAIN}/records" -H "Authorization: sso-key ${GDAPIKEY}" -H "Content-Type: application/json" -d "[ {\"data\":\"@\",\"name\":\"${myhostname}\",\"port\":65535,\"ttl\":3600,\"type\":\"CNAME\"} ]"`
   echo Response to PATCH is: $resp
-  echo "Added CNAME record for ${hostname}.${GDDOMAIN}"
+  echo "Added CNAME record for ${myhostname}.${GDDOMAIN}"
 else
   echo CNAME record for ${myhostname} already exists. No action taken.
 fi
