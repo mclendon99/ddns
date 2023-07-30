@@ -27,5 +27,5 @@ The following scripts are supplied:
 * ddns-cname.sh - Adds a godaddy CNAME record for the local host if not already present.
                 The CNAME record points to the domain.  The script takes no arguments.
                 Suppresses the "unsafe to continue" warning from web browsers using HTTPS.
-* ddns-acme.sh - Adds or replaces an ACME challenge record. The challenge is passed in as
+* ddns-acme.sh - Adds an ACME challenge record. The challenge is passed in as
                  an argument to the script.
