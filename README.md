@@ -18,7 +18,7 @@ The ddns.conf file is of the form:
     # Replace with your domain as registered on GoDaddy (not the hostname part).
     GDDOMAIN=""
 
-The configuration items can also be read from the environment. The config file items override the environment entries.
+The configuration items can also be read from the environment. The config file items override the environment entries. An example ddns.conf.example file is included with this package.
 
 The following scripts are supplied:
 
