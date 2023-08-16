@@ -22,8 +22,8 @@ The configuration items can also be read from the environment. The config file i
 
 The following scripts are supplied:
 
-    * ddns-a.sh - Updates the godaddy A record if different than your external IP.  The script takes no arguments.
+    * ddns-a.sh - Updates the godaddy A record if different than your external IP. The script takes no arguments.
 
-    * ddns-cname.sh - Adds a godaddy CNAME record for the local host if not already present. The CNAME record points to the domain.  The script takes no arguments. Suppresses the "unsafe to continue" warning from web browsers using HTTPS.  
+    * ddns-cname.sh - Adds a godaddy CNAME record for the local host if not already present. The CNAME record points to the domain. The script takes no arguments. Suppresses the "unsafe to continue" warning from web browsers using HTTPS.  
                 
-    * ddns-acme.sh - Adds an ACME challenge record. The challenge is passed in as an argument to the script.
+    * ddns-acme.sh - Adds an ACME challenge TXT record. The mandatory challenge is passed in as an argument to the script. The operator is responsible for cleaning up the TXT records after validation.
