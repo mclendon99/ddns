@@ -29,7 +29,7 @@ then
     exit -2
 fi
 
-echo "Adding ACME challenge for ${GDDOMAIN} to ${GDHOST}""
+echo "Adding ACME challenge for ${GDDOMAIN} to ${GDHOST}"
 resp=`curl -s -X PATCH "${GDHOST}/v1/domains/${GDDOMAIN}/records" -H "Authorization: sso-key ${GDAPIKEY}" -H "Content-Type: application/json" -d "[ {\"data\":\"$1\",\"name\":\"_acme-challenge\",\"port\":65535,\"ttl\":3600,\"type\":\"TXT\"} ]"`
 if grep -q "NOT_FOUND" <<< $resp ; then
     echo "Domain ${GDDOMAIN} does not appear to exist on GoDaddy. Exiting."
