@@ -2,6 +2,7 @@
 
 A collection of bash scripts to manage godaddy records remotely.
 Bash is required as the scripts use the `[[` operator.
+*** N.B. Godaddy no longer allows Management and DNS API access unless you have 10 or more domains registered. Use CloudFLare instead. It's just easier.
 
 The scripts require that curl be installed, e.g.
 
